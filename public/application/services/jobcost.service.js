@@ -974,8 +974,9 @@ app.service("jobcostService", [
       Excel.run(function(ctx) {
         var headerOffset = 6;
         var length = headerOffset + data.sheetData.length;
+        var worksheet = ctx.workbook.worksheets.getItem(data.dataSheetName);
+
         if(!data.removeSubtotals){
-          var worksheet = ctx.workbook.worksheets.getItem(data.dataSheetName);
           var grandTotalData = [
             ['=SUBTOTAL(9,G7:G' + (length) + ')', '=SUBTOTAL(9,H7:H' + (length) + ')', '=SUBTOTAL(9,I7:I' + (length) + ')', '=SUBTOTAL(9,J7:J' + (length) + ')', '=SUBTOTAL(9,K7:K' + (length) + ')']
           ];
@@ -998,12 +999,11 @@ app.service("jobcostService", [
           range.numberFormat = [_.fill(Array(5), formatPricingTotal)];
           range.format.font.bold = true;
           range.format.font.color = '#00037B';
+          length++;
         }
         worksheet.getUsedRange().format.autofitColumns();
         
-        
         //Set Print Settings
-        length++;
         var activeWorksheet = ctx.workbook.worksheets.getActiveWorksheet();
         activeWorksheet.pageLayout.orientation = Excel.PageOrientation.landscape;
         activeWorksheet.pageLayout.setPrintTitleRows("$1:$6");
